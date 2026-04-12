@@ -290,106 +290,106 @@
   </div>
 
   <script>
-    function unlockAI() {
-      document.getElementById("lockOverlay").style.display = "none";
-      document.getElementById("aiContent").style.display = "block";
+  function unlockAI() {
+    document.getElementById("lockOverlay").style.display = "none";
+    document.getElementById("aiContent").style.display = "block";
+  }
+
+  function generatePlan() {
+    const budget = parseFloat(document.getElementById("budget").value);
+    const risk = document.getElementById("risk").value;
+    const goal = document.getElementById("goal").value;
+    const output = document.getElementById("planOutput");
+
+    output.innerHTML = "<p>Analyzing your inputs...</p>";
+
+    if (!budget || !risk || !goal) {
+      output.innerHTML = `
+        <h4>Missing information</h4>
+        <p>Please enter your monthly budget, risk level, and goal.</p>
+      `;
+      return;
     }
 
-    function generatePlan() {
-  const budget = parseFloat(document.getElementById("budget").value);
-  const risk = document.getElementById("risk").value;
-  const goal = document.getElementById("goal").value;
-  const output = document.getElementById("planOutput");
+    let longTermPercent = 0;
+    let shortTermPercent = 0;
+    let safePercent = 0;
+    const weeklyAmount = (budget / 4).toFixed(2);
 
-  output.innerHTML = "<p>Analyzing your inputs...</p>";
+    if (risk === "Low") {
+      safePercent = 50;
+      longTermPercent = 40;
+      shortTermPercent = 10;
+    } else if (risk === "Medium") {
+      safePercent = 25;
+      longTermPercent = 55;
+      shortTermPercent = 20;
+    } else {
+      safePercent = 10;
+      longTermPercent = 60;
+      shortTermPercent = 30;
+    }
 
-  if (!budget || !risk || !goal) {
+    if (goal === "Short-Term") {
+      shortTermPercent += 15;
+      longTermPercent -= 10;
+      safePercent -= 5;
+    } else if (goal === "Long-Term") {
+      longTermPercent += 15;
+      shortTermPercent -= 10;
+      safePercent -= 5;
+    } else if (goal === "Both") {
+      longTermPercent += 5;
+      shortTermPercent += 5;
+      safePercent -= 10;
+    }
+
+    if (safePercent < 5) safePercent = 5;
+
+    const safeAmount = ((budget * safePercent) / 100).toFixed(2);
+    const longTermAmount = ((budget * longTermPercent) / 100).toFixed(2);
+    const shortTermAmount = ((budget * shortTermPercent) / 100).toFixed(2);
+
+    let strategyText = "";
+
+    if (risk === "Low") {
+      strategyText = "Focus on consistency, lower volatility, and steady long-term habits.";
+    } else if (risk === "Medium") {
+      strategyText = "Balance growth with stability using a mix of long-term and flexible investing.";
+    } else {
+      strategyText = "Aim for stronger growth with higher volatility and a smaller safety cushion.";
+    }
+
     output.innerHTML = `
-      <h4>Missing information</h4>
-      <p>Please enter your monthly budget, risk level, and goal.</p>
+      <h4>📊 Your Personalized Investing Plan</h4>
+
+      <p><strong>Monthly Budget:</strong> $${budget.toFixed(2)}</p>
+      <p><strong>Weekly Contribution:</strong> $${weeklyAmount}</p>
+      <p><strong>Risk Level:</strong> ${risk}</p>
+      <p><strong>Goal:</strong> ${goal}</p>
+
+      <hr style="border-color:#222; margin:16px 0;">
+
+      <p><strong>🛡 Safe Reserve:</strong> $${safeAmount} (${safePercent}%)</p>
+      <p><strong>📈 Long-Term Growth:</strong> $${longTermAmount} (${longTermPercent}%)</p>
+      <p><strong>⚡ Short-Term Opportunities:</strong> $${shortTermAmount} (${shortTermPercent}%)</p>
+
+      <hr style="border-color:#222; margin:16px 0;">
+
+      <p><strong>🧠 Strategy Insight:</strong></p>
+      <p>${strategyText}</p>
+
+      <p><strong>📅 Weekly Action Plan:</strong></p>
+      <p>Set aside <strong>$${weeklyAmount}</strong> every week and stay consistent. Review your progress every 30 days.</p>
+
+      <p><strong>⚠️ Risk Reminder:</strong></p>
+      <p>Markets fluctuate. Stay disciplined and avoid emotional decisions.</p>
+
+      <p style="color:#8e8e8e; font-size:14px; margin-top:10px;">
+        Powered by VestIQAI EL LOBO 🐺
+      </p>
     `;
-    return;
   }
-
-  let longTermPercent = 0;
-  let shortTermPercent = 0;
-  let safePercent = 0;
-  const weeklyAmount = (budget / 4).toFixed(2);
-
-  if (risk === "Low") {
-    safePercent = 50;
-    longTermPercent = 40;
-    shortTermPercent = 10;
-  } else if (risk === "Medium") {
-    safePercent = 25;
-    longTermPercent = 55;
-    shortTermPercent = 20;
-  } else {
-    safePercent = 10;
-    longTermPercent = 60;
-    shortTermPercent = 30;
-  }
-
-  if (goal === "Short-Term") {
-    shortTermPercent += 15;
-    longTermPercent -= 10;
-    safePercent -= 5;
-  } else if (goal === "Long-Term") {
-    longTermPercent += 15;
-    shortTermPercent -= 10;
-    safePercent -= 5;
-  } else if (goal === "Both") {
-    longTermPercent += 5;
-    shortTermPercent += 5;
-    safePercent -= 10;
-  }
-
-  if (safePercent < 5) safePercent = 5;
-
-  const safeAmount = ((budget * safePercent) / 100).toFixed(2);
-  const longTermAmount = ((budget * longTermPercent) / 100).toFixed(2);
-  const shortTermAmount = ((budget * shortTermPercent) / 100).toFixed(2);
-
-  let strategyText = "";
-
-  if (risk === "Low") {
-    strategyText = "Focus on consistency, lower volatility, and steady long-term habits.";
-  } else if (risk === "Medium") {
-    strategyText = "Balance growth with stability using a mix of long-term and flexible investing.";
-  } else {
-    strategyText = "Aim for stronger growth with higher volatility and a smaller safety cushion.";
-  }
-
-  output.innerHTML = `
-    <h4>📊 Your Personalized Investing Plan</h4>
-
-    <p><strong>Monthly Budget:</strong> $${budget.toFixed(2)}</p>
-    <p><strong>Weekly Contribution:</strong> $${weeklyAmount}</p>
-    <p><strong>Risk Level:</strong> ${risk}</p>
-    <p><strong>Goal:</strong> ${goal}</p>
-
-    <hr style="border-color:#222; margin:16px 0;">
-
-    <p><strong>🛡 Safe Reserve:</strong> $${safeAmount} (${safePercent}%)</p>
-    <p><strong>📈 Long-Term Growth:</strong> $${longTermAmount} (${longTermPercent}%)</p>
-    <p><strong>⚡ Short-Term Opportunities:</strong> $${shortTermAmount} (${shortTermPercent}%)</p>
-
-    <hr style="border-color:#222; margin:16px 0;">
-
-    <p><strong>🧠 Strategy Insight:</strong></p>
-    <p>${strategyText}</p>
-
-    <p><strong>📅 Weekly Action Plan:</strong></p>
-    <p>Set aside <strong>$${weeklyAmount}</strong> every week and stay consistent. Review your progress every 30 days.</p>
-
-    <p><strong>⚠️ Risk Reminder:</strong></p>
-    <p>Markets fluctuate. Stay disciplined and avoid emotional decisions.</p>
-
-    <p style="color:#8e8e8e; font-size:14px; margin-top:10px;">
-      Powered by VestIQAI EL LOBO 🐺
-    </p>
-  `;
-}
-  </script>
+</script>
 </body>
 </html>
