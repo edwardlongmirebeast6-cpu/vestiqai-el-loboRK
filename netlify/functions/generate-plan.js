@@ -1,19 +1,20 @@
 exports.handler = async (event) => {
-  // Only allow POST requests
   if (event.httpMethod !== "POST") {
     return {
       statusCode: 405,
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ error: "Method not allowed" }),
     };
   }
 
   try {
-    const { budget, risk, goal, accessMode } = JSON.parse(event.body);
+    const { budget, risk, goal, accessMode } = JSON.parse(event.body || "{}");
 
     if (!budget || !risk || !goal) {
       return {
         statusCode: 400,
-        body: JSON.stringify({ error: "Missing inputs" }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ error: "Missing budget, risk, or goal" }),
       };
     }
 
@@ -24,54 +25,70 @@ exports.handler = async (event) => {
       : "Return a full 4-week monthly investing plan with weekly breakdown.";
 
     const prompt = `
-You are an investing planner for beginners.
+You are an investing planning assistant for beginners.
 
-User:
-- Budget: $${budget}
-- Risk: ${risk}
+Rules:
+- Do not guarantee profits.
+- Do not present this as licensed financial advice.
+- Be practical, beginner-friendly, and concise.
+- Focus on structure, discipline, and risk awareness.
+
+User inputs:
+- Monthly budget: $${budget}
+- Risk level: ${risk}
 - Goal: ${goal}
 
 Instructions:
 - ${planScope}
-- Keep it simple, structured, and beginner-friendly
 - Include:
   1. Plan title
   2. Budget breakdown
-  3. Strategy
+  3. Strategy insight
   4. Action steps
   5. Risk reminder
-- Format in clean HTML only (h4, p, strong, hr)
-
-No fluff. No financial guarantees.
+- Return plain HTML only using tags like h4, p, strong, hr, ul, li.
 `;
 
     const response = await fetch("https://api.openai.com/v1/responses", {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`,
         "Content-Type": "application/json",
+        "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`,
       },
       body: JSON.stringify({
         model: "gpt-5.4-mini",
-        input: prompt,
+        input: prompt
       }),
     });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      return {
+        statusCode: 500,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          error: "OpenAI request failed",
+          details: errorText
+        }),
+      };
+    }
 
     const data = await response.json();
 
     return {
       statusCode: 200,
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        html: data.output_text || "<p>Error generating plan.</p>",
+        html: data.output_text || "<h4>Plan unavailable</h4><p>We couldn't generate your plan right now.</p>"
       }),
     };
-
-  } catch (err) {
+  } catch (error) {
     return {
       statusCode: 500,
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         error: "Server error",
-        details: err.message,
+        details: error.message
       }),
     };
   }
