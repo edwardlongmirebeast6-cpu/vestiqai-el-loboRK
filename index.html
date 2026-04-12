@@ -58,12 +58,18 @@
       margin-top: 40px;
     }
     .card {
-      background: #111111;
-      border: 1px solid #1f1f1f;
-      border-radius: 18px;
-      padding: 22px;
-      text-align: left;
-      box-shadow: 0 10px 30px rgba(0,0,0,.35);
+  background: #111111;
+  border: 1px solid #1f1f1f;
+  border-radius: 18px;
+  padding: 22px;
+  text-align: left;
+  box-shadow: 0 10px 30px rgba(0,0,0,.35);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+      .card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 14px 34px rgba(0,0,0,.45);
+}
+}35);
     }
     .founder {
       margin-top: 50px;
@@ -144,13 +150,15 @@
     <h1>VestIQAI EL LOBO 🐺</h1>
     <h2>AI-powered investing plans for beginners</h2>
     <p>
-      Stop guessing where to invest. Build weekly and monthly investing plans,
-      track short-term and long-term goals, and grow with structured AI guidance.
-    </p>
+   <h2>AI-powered investing plans built for beginners</h2>
+<p>
+  Stop guessing where to invest. Build weekly and monthly investing plans,
+  track your goals, and get structured guidance designed for real growth.
+</p>
 <p style="color:#8e8e8e; font-size:14px; margin-top:-6px;">
   Built for beginners • Structured by AI • Designed for real growth
 </p>
-    <a class="btn" href="#pricing">Get Started</a>
+    <a class="btn" href="#pricing">Choose Your Plan</a>
     <a class="btn" href="#founder">Founder Story</a>
     <a class="btn" href="#ai-planner">Generate My Plan</a>
   
@@ -170,7 +178,7 @@
         Premium - $14.99/month
       </a>
         <button class="btn" onclick="unlockAI()">
-  I Paid (Unlock)
+  Demo Unlock
 </button>
     </div>
   </div>
@@ -182,7 +190,7 @@
   </p>
 
   <p style="color:#b30d0d; font-size:14px;">
-    🔒 Full AI strategy access unlocked with Pro & Premium plans
+    🔒 Demo version shown below. Paid access will require verified login in the full app.
   </p>
 
   <!-- LOCKED MESSAGE -->
