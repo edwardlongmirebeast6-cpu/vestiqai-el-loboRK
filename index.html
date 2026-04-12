@@ -140,6 +140,7 @@
       border-radius: 14px;
       background: #111111;
       border: 1px solid #1f1f1f;
+      border-left: 3px solid #b30d0d;
       text-align: left;
       line-height: 1.7;
       color: #d7d7d7;
@@ -300,11 +301,7 @@
       const goal = document.getElementById("goal").value;
       const output = document.getElementById("planOutput");
 
-      if (!budget || !risk || !goal) {
-        output.innerHTML = `
-          <h4>Missing information</h4>
-          <p>Please enter your monthly budget, risk level, and goal.</p>
-        `;
+      output.innerHTML = "<p>Analyzing your inputs...</p>";
         return;
       }
 
@@ -358,20 +355,34 @@
       }
 
       output.innerHTML = `
-        <h4>Your Beginner Investing Plan</h4>
-        <p><strong>Monthly Budget:</strong> $${budget.toFixed(2)}</p>
-        <p><strong>Suggested Weekly Contribution:</strong> $${weeklyAmount}</p>
-        <p><strong>Risk Level:</strong> ${risk}</p>
-        <p><strong>Goal Focus:</strong> ${goal}</p>
-        <hr style="border-color:#222; margin:16px 0;">
-        <p><strong>Safe / Cash Reserve:</strong> $${safeAmount} (${safePercent}%)</p>
-        <p><strong>Long-Term Investing:</strong> $${longTermAmount} (${longTermPercent}%)</p>
-        <p><strong>Short-Term Opportunity Bucket:</strong> $${shortTermAmount} (${shortTermPercent}%)</p>
-        <hr style="border-color:#222; margin:16px 0;">
-        <p><strong>Strategy:</strong> ${strategyText}</p>
-        <p><strong>Weekly Action:</strong> Move $${weeklyAmount} into your investing plan once per week and review progress at the end of each month.</p>
-        <p><strong>Reminder:</strong> Stay disciplined, avoid emotional decisions, and review your budget regularly.</p>
-      `;
+  <h4>📊 Your Personalized Investing Plan</h4>
+
+  <p><strong>Monthly Budget:</strong> $${budget.toFixed(2)}</p>
+  <p><strong>Weekly Contribution:</strong> $${weeklyAmount}</p>
+  <p><strong>Risk Level:</strong> ${risk}</p>
+  <p><strong>Goal:</strong> ${goal}</p>
+
+  <hr style="border-color:#222; margin:16px 0;">
+
+  <p><strong>🛡 Safe Reserve:</strong> $${safeAmount} (${safePercent}%)</p>
+  <p><strong>📈 Long-Term Growth:</strong> $${longTermAmount} (${longTermPercent}%)</p>
+  <p><strong>⚡ Short-Term Opportunities:</strong> $${shortTermAmount} (${shortTermPercent}%)</p>
+
+  <hr style="border-color:#222; margin:16px 0;">
+
+  <p><strong>🧠 Strategy Insight:</strong></p>
+  <p>${strategyText}</p>
+
+  <p><strong>📅 Weekly Action Plan:</strong></p>
+  <p>Set aside <strong>$${weeklyAmount}</strong> every week and stay consistent. Review your progress every 30 days.</p>
+
+  <p><strong>⚠️ Risk Reminder:</strong></p>
+  <p>Markets fluctuate. Stay disciplined and avoid emotional decisions.</p>
+
+  <p style="color:#8e8e8e; font-size:14px; margin-top:10px;">
+    Powered by VestIQAI EL LOBO 🐺
+  </p>
+`;
     }
   </script>
 </body>
