@@ -40,6 +40,7 @@
     h1 {
       text-align: center;
       margin-bottom: 12px;
+      color: #ffffff;
     }
 
     p {
@@ -57,6 +58,7 @@
       color: white;
       box-sizing: border-box;
       margin-bottom: 12px;
+      font-size: 16px;
     }
 
     .btn {
@@ -69,6 +71,7 @@
       cursor: pointer;
       font-weight: bold;
       margin-top: 8px;
+      font-size: 16px;
     }
 
     .btn:hover {
@@ -80,7 +83,12 @@
       color: #b30d0d;
       font-size: 14px;
       text-align: center;
-      min-height: 20px;
+      min-height: 22px;
+      line-height: 1.4;
+    }
+
+    .success {
+      color: #33cc99 !important;
     }
 
     .link {
@@ -99,8 +107,8 @@
       <h1>Login / Sign Up</h1>
       <p>Access your dashboard, subscription, and AI plans.</p>
 
-      <input id="email" type="email" placeholder="Email address" />
-      <input id="password" type="password" placeholder="Password" />
+      <input id="email" type="email" placeholder="Email address" autocomplete="email" />
+      <input id="password" type="password" placeholder="Password" autocomplete="current-password" />
 
       <button class="btn" onclick="signUp()">Create Account</button>
       <button class="btn" onclick="signIn()">Login</button>
@@ -115,22 +123,27 @@
     const supabaseAnonKey = "sb_publishable_OaS8RdnSO95xX3XfLFfRGw_WlkonKoF";
     const supabase = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
 
+    function setStatus(message, isSuccess = false) {
+      const status = document.getElementById("status");
+      status.textContent = message;
+      status.className = isSuccess ? "status success" : "status";
+    }
+
     async function signUp() {
       const email = document.getElementById("email").value.trim();
       const password = document.getElementById("password").value.trim();
-      const status = document.getElementById("status");
 
       if (!email || !password) {
-        status.textContent = "Please enter your email and password.";
+        setStatus("Please enter your email and password.");
         return;
       }
 
       if (password.length < 6) {
-        status.textContent = "Password must be at least 6 characters.";
+        setStatus("Password must be at least 6 characters.");
         return;
       }
 
-      status.textContent = "Creating account...";
+      setStatus("Creating account...");
 
       try {
         const { data, error } = await supabase.auth.signUp({
@@ -139,31 +152,30 @@
         });
 
         if (error) {
-          status.textContent = error.message;
+          setStatus(error.message);
           return;
         }
 
         if (data && data.user) {
-          status.textContent = "Account created successfully. You can log in now.";
+          setStatus("Account created successfully. You can log in now.", true);
         } else {
-          status.textContent = "Account created. Check your email if confirmation is enabled.";
+          setStatus("Account created. Check your email if confirmation is enabled.", true);
         }
       } catch (err) {
-        status.textContent = "Something went wrong creating your account.";
+        setStatus("Something went wrong creating your account.");
       }
     }
 
     async function signIn() {
       const email = document.getElementById("email").value.trim();
       const password = document.getElementById("password").value.trim();
-      const status = document.getElementById("status");
 
       if (!email || !password) {
-        status.textContent = "Please enter your email and password.";
+        setStatus("Please enter your email and password.");
         return;
       }
 
-      status.textContent = "Logging in...";
+      setStatus("Logging in...");
 
       try {
         const { error } = await supabase.auth.signInWithPassword({
@@ -172,13 +184,13 @@
         });
 
         if (error) {
-          status.textContent = error.message;
+          setStatus(error.message);
           return;
         }
 
         window.location.href = "/dashboard.html";
       } catch (err) {
-        status.textContent = "Something went wrong logging in.";
+        setStatus("Something went wrong logging in.");
       }
     }
   </script>
