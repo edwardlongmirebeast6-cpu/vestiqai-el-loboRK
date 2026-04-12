@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard | VestIQAI EL LOBO</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #050505;
+      color: #f5f5f5;
+    }
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 30px 20px 60px;
+    }
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .logo {
+      max-width: 220px;
+      width: 100%;
+      border-radius: 16px;
+    }
+    .btn {
+      background: #b30d0d;
+      color: white;
+      padding: 12px 18px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .btn:hover {
+      background: #8f0a0a;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 18px;
+    }
+    .card {
+      background: #111111;
+      border: 1px solid #1f1f1f;
+      border-radius: 18px;
+      padding: 22px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.35);
+    }
+    h1 {
+      margin: 0 0 18px;
+    }
+    h3 {
+      margin-top: 0;
+    }
+    p {
+      color: #c8c8c8;
+      line-height: 1.6;
+    }
+    .status {
+      color: #b30d0d;
+      font-size: 14px;
+      margin-top: 10px;
+    }
+    .planner {
+      margin-top: 24px;
+    }
+    input, select {
+      width: 100%;
+      padding: 14px;
+      border-radius: 10px;
+      border: 1px solid #2a2a2a;
+      background: #0d0d0d;
+      color: white;
+      box-sizing: border-box;
+      margin-bottom: 12px;
+    }
+    .output {
+      margin-top: 16px;
+      background: #0d0d0d;
+      border: 1px solid #1f1f1f;
+      border-left: 3px solid #b30d0d;
+      border-radius: 14px;
+      padding: 18px;
+      color: #d7d7d7;
+      line-height: 1.7;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="topbar">
+      <img class="logo" src="logo-main.PNG" alt="VestIQAI EL LOBO logo" />
+      <button class="btn" onclick="logout()">Logout</button>
+    </div>
+
+    <h1>Your Dashboard</h1>
+
+    <div class="grid">
+      <div class="card">
+        <h3>Account</h3>
+        <p id="userEmail">Loading user...</p>
+      </div>
+
+      <div class="card">
+        <h3>Subscription Status</h3>
+        <p id="subscriptionStatus">Checking...</p>
+        <div id="subscriptionNote" class="status"></div>
+      </div>
+
+      <div class="card">
+        <h3>Market Pulse</h3>
+        <p>Live stock data card placeholder for next step.</p>
+      </div>
+
+      <div class="card">
+        <h3>Billing</h3>
+        <a class="btn" href="/">Back to Plans</a>
+      </div>
+    </div>
+
+    <div class="card planner">
+      <h3>Generate Your AI Plan</h3>
+      <input id="budget" type="number" placeholder="Monthly budget ($)" />
+      <select id="risk">
+        <option value="">Select risk level</option>
+        <option value="Low">Low</option>
+        <option value="Medium">Medium</option>
+        <option value="High">High</option>
+      </select>
+      <select id="goal">
+        <option value="">Select goal</option>
+        <option value="Short-Term">Short-Term</option>
+        <option value="Long-Term">Long-Term</option>
+        <option value="Both">Both</option>
+      </select>
+
+      <button class="btn" onclick="generatePlan()">Generate Plan</button>
+
+      <div id="output" class="output">
+        Your plan will appear here.
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const supabaseUrl = "YOUR_SUPABASE_URL";
+    const supabaseAnonKey = "YOUR_SUPABASE_ANON_KEY";
+    const supabase = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
+
+    async function loadUser() {
+      const { data } = await supabase.auth.getUser();
+      const user = data.user;
+
+      if (!user) {
+        window.location.href = "/login.html";
+        return null;
+      }
+
+      document.getElementById("userEmail").textContent = user.email;
+      return user;
+    }
+
+    async function loadSubscription() {
+      const { data: { session } } = await supabase.auth.getSession();
+      const res = await fetch("/.netlify/functions/get-session", {
+        headers: {
+          Authorization: `Bearer ${session.access_token}`
+        }
+      });
+      const data = await res.json();
+
+      document.getElementById("subscriptionStatus").textContent =
+        data.subscription_status || "No subscription found";
+
+      document.getElementById("subscriptionNote").textContent =
+        data.subscription_status === "active"
+          ? "Full access enabled."
+          : "Upgrade to unlock paid features.";
+    }
+
+    async function generatePlan() {
+      const budget = parseFloat(document.getElementById("budget").value);
+      const risk = document.getElementById("risk").value;
+      const goal = document.getElementById("goal").value;
+      const output = document.getElementById("output");
+
+      output.innerHTML = "Generating your AI plan...";
+
+      const { data: { session } } = await supabase.auth.getSession();
+
+      const check = await fetch("/.netlify/functions/get-session", {
+        headers: {
+          Authorization: `Bearer ${session.access_token}`
+        }
+      });
+      const profile = await check.json();
+
+      const accessMode = profile.subscription_status === "active" ? "paid" : "demo";
+
+      const response = await fetch("/.netlify/functions/generate-plan", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ budget, risk, goal, accessMode })
+      });
+
+      const data = await response.json();
+      output.innerHTML = data.html || "Unable to generate plan.";
+    }
+
+    async function logout() {
+      await supabase.auth.signOut();
+      window.location.href = "/login.html";
+    }
+
+    window.onload = async function () {
+      await loadUser();
+      await loadSubscription();
+    };
+  </script>
+</body>
+</html>
