@@ -153,6 +153,9 @@
     <a class="btn" href="#pricing">Get Started</a>
     <a class="btn" href="#founder">Founder Story</a>
     <a class="btn" href="#ai-planner">Generate My Plan</a>
+    <button class="btn" onclick="unlockAI()">
+  I Paid (Unlock)
+</button>
 <div class="grid">
   <div class="card" id="pricing">
     <h3>Choose Your Plan</h3>
@@ -176,39 +179,58 @@
   <p>
     Enter your budget, risk level, and investing goal to generate a starter plan.
   </p>
-<p style="color:#b30d0d; font-size:14px;">
-  🔒 Full AI strategy access unlocked with Pro & Premium plans
-</p>
-  <div class="ai-fields">
-    <input type="number" id="budget" placeholder="Monthly budget ($)" />
 
-    <select id="risk">
-      <option value="">Select risk level</option>
-      <option value="Low">Low</option>
-      <option value="Medium">Medium</option>
-      <option value="High">High</option>
-    </select>
-
-    <select id="goal">
-      <option value="">Select goal</option>
-      <option value="Short-Term">Short-Term</option>
-      <option value="Long-Term">Long-Term</option>
-      <option value="Both">Both</option>
-    </select>
-  </div>
-
-  <div class="ai-actions">
-    <button class="btn" onclick="generatePlan()">Generate My Plan</button>
-  </div>
-
-  <div class="ai-output" id="planOutput">
-    <h4>Your plan will appear here</h4>
-    <p>Fill out your details and click the button to generate your beginner investing plan.</p>
-  </div>
-
-  <p class="note">
-    Educational planning tool only. Not financial advice.
+  <p style="color:#b30d0d; font-size:14px;">
+    🔒 Full AI strategy access unlocked with Pro & Premium plans
   </p>
+
+  <!-- LOCKED MESSAGE -->
+  <div id="lockOverlay" style="
+    margin-top:20px;
+    padding:20px;
+    border-radius:14px;
+    background:#111;
+    border:1px solid #1f1f1f;
+  ">
+    <h4>🔒 Locked Feature</h4>
+    <p style="color:#c8c8c8;">
+      Unlock your personalized AI investing plan by upgrading below.
+    </p>
+
+    <a class="btn" href="#pricing">Unlock Access</a>
+  </div>
+
+  <!-- HIDDEN TOOL -->
+  <div id="aiContent" style="display:none;">
+
+    <div class="ai-fields">
+      <input type="number" id="budget" placeholder="Monthly budget ($)" />
+
+      <select id="risk">
+        <option value="">Select risk level</option>
+        <option value="Low">Low</option>
+        <option value="Medium">Medium</option>
+        <option value="High">High</option>
+      </select>
+
+      <select id="goal">
+        <option value="">Select goal</option>
+        <option value="Short-Term">Short-Term</option>
+        <option value="Long-Term">Long-Term</option>
+        <option value="Both">Both</option>
+      </select>
+    </div>
+
+    <div class="ai-actions">
+      <button class="btn" onclick="generatePlan()">Generate My Plan</button>
+    </div>
+
+    <div class="ai-output" id="planOutput">
+      <h4>Your plan will appear here</h4>
+      <p>Fill out your details and click the button to generate your beginner investing plan.</p>
+    </div>
+
+  </div>
 </div>
     <div class="founder" id="founder">
       <h3>Founder</h3>
@@ -227,6 +249,10 @@
   </div>
   <script>
   function generatePlan() {
+    function unlockAI() {
+  document.getElementById("lockOverlay").style.display = "none";
+  document.getElementById("aiContent").style.display = "block";
+}
     const budget = parseFloat(document.getElementById("budget").value);
     const risk = document.getElementById("risk").value;
     const goal = document.getElementById("goal").value;
