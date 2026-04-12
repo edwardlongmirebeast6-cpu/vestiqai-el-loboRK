@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>VestIQAI EL LOBO</title>
   <style>
-    
     body {
       margin: 0;
       font-family: Arial, sans-serif;
@@ -13,11 +12,13 @@
       color: #f5f5f5;
       text-align: center;
     }
+
     .container {
       padding: 40px 20px;
       max-width: 1100px;
       margin: 0 auto;
     }
+
     .logo {
       max-width: 280px;
       width: 100%;
@@ -25,52 +26,64 @@
       display: block;
       border-radius: 18px;
     }
+
     h1 {
       font-size: 42px;
       margin-bottom: 10px;
       letter-spacing: 1px;
     }
+
     h2 {
       color: #b30d0d;
       margin-top: 0;
     }
+
     p {
       color: #c8c8c8;
       max-width: 720px;
       margin: 0 auto 24px;
       line-height: 1.6;
     }
+
     .btn {
-  display: inline-block;
-  background: #b30d0d;
-  color: white;
-  padding: 14px 22px;
-  border-radius: 10px;
-  text-decoration: none;
-  font-weight: bold;
-  margin: 10px; /* change from 8px → 10px */
-}
-  
+      display: inline-block;
+      background: #b30d0d;
+      color: white;
+      padding: 14px 22px;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: bold;
+      margin: 10px;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn:hover {
+      background: #8f0a0a;
+    }
+
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
       gap: 18px;
       margin-top: 40px;
     }
+
     .card {
-  background: #111111;
-  border: 1px solid #1f1f1f;
-  border-radius: 18px;
-  padding: 22px;
-  text-align: left;
-  box-shadow: 0 10px 30px rgba(0,0,0,.35);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-      .card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 14px 34px rgba(0,0,0,.45);
-}
-}35);
+      background: #111111;
+      border: 1px solid #1f1f1f;
+      border-radius: 18px;
+      padding: 22px;
+      text-align: left;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
+
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 14px 34px rgba(0, 0, 0, 0.45);
+    }
+
     .founder {
       margin-top: 50px;
       background: #0d0d0d;
@@ -78,169 +91,187 @@
       border-radius: 18px;
       border: 1px solid #1f1f1f;
     }
+
     .footer {
       margin-top: 50px;
       color: #8e8e8e;
       font-size: 14px;
       padding-bottom: 30px;
     }
+
     .ai-tool {
-  margin-top: 40px;
-  background: #0d0d0d;
-  border: 1px solid #1f1f1f;
-  border-radius: 18px;
-  padding: 28px;
-  box-shadow: 0 10px 30px rgba(0,0,0,.35);
-}
+      margin-top: 40px;
+      background: #0d0d0d;
+      border: 1px solid #1f1f1f;
+      border-radius: 18px;
+      padding: 28px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+    }
 
-.ai-tool h3 {
-  margin-top: 0;
-}
+    .ai-tool h3 {
+      margin-top: 0;
+    }
 
-.ai-fields {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 14px;
-  margin-top: 20px;
-}
+    .ai-fields {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+      margin-top: 20px;
+    }
 
-.ai-fields input,
-.ai-fields select {
-  width: 100%;
-  padding: 14px;
-  border-radius: 10px;
-  border: 1px solid #2a2a2a;
-  background: #111111;
-  color: #f5f5f5;
-  box-sizing: border-box;
-}
+    .ai-fields input,
+    .ai-fields select {
+      width: 100%;
+      padding: 14px;
+      border-radius: 10px;
+      border: 1px solid #2a2a2a;
+      background: #111111;
+      color: #f5f5f5;
+      box-sizing: border-box;
+    }
 
-.ai-actions {
-  margin-top: 20px;
-}
+    .ai-actions {
+      margin-top: 20px;
+    }
 
-.ai-output {
-  margin-top: 24px;
-  padding: 18px;
-  border-radius: 14px;
-  background: #111111;
-  border: 1px solid #1f1f1f;
-  text-align: left;
-  line-height: 1.7;
-  color: #d7d7d7;
-}
+    .ai-output {
+      margin-top: 24px;
+      padding: 18px;
+      border-radius: 14px;
+      background: #111111;
+      border: 1px solid #1f1f1f;
+      text-align: left;
+      line-height: 1.7;
+      color: #d7d7d7;
+    }
 
-.ai-output h4 {
-  margin-top: 0;
-  color: #ffffff;
-}
+    .ai-output h4 {
+      margin-top: 0;
+      color: #ffffff;
+    }
 
-.note {
-  color: #8e8e8e;
-  font-size: 14px;
-  margin-top: 12px;
-}
+    .note {
+      color: #8e8e8e;
+      font-size: 14px;
+      margin-top: 12px;
+    }
   </style>
 </head>
 <body>
   <div class="container">
-   <div style="margin-bottom: 30px;">
-  <img class="logo" src="logo-main.PNG" style="max-width: 320px;" />
-</div> 
+    <div style="margin-bottom: 30px;">
+      <img class="logo" src="logo-main.PNG" style="max-width: 320px;" alt="VestIQAI EL LOBO logo" />
+    </div>
+
     <h1>VestIQAI EL LOBO 🐺</h1>
-    <h2>AI-powered investing plans for beginners</h2>
+    <h2>AI-powered investing plans built for beginners</h2>
     <p>
-   <h2>AI-powered investing plans built for beginners</h2>
-<p>
-  Stop guessing where to invest. Build weekly and monthly investing plans,
-  track your goals, and get structured guidance designed for real growth.
-</p>
-<p style="color:#8e8e8e; font-size:14px; margin-top:-6px;">
-  Built for beginners • Structured by AI • Designed for real growth
-</p>
+      Stop guessing where to invest. Build weekly and monthly investing plans,
+      track your goals, and get structured guidance designed for real growth.
+    </p>
+
+    <p style="color:#8e8e8e; font-size:14px; margin-top:-6px;">
+      Built for beginners • Structured by AI • Designed for real growth
+    </p>
+
     <a class="btn" href="#pricing">Choose Your Plan</a>
     <a class="btn" href="#founder">Founder Story</a>
     <a class="btn" href="#ai-planner">Generate My Plan</a>
-  
-<div class="grid">
-  <div class="card" id="pricing">
-    <h3>Choose Your Plan</h3>
-    <p>Start building your investing strategy today</p>
-<p style="color:#b30d0d; font-size:14px;">
-  Limited early access pricing — lock in before price increases
-</p>
-    <div style="text-align:center; margin-top:15px;">
-      <a class="btn" href="https://buy.stripe.com/9B6aEW1RR9Ks0Ywcp6cIE01" target="_blank">
-        Pro - $9.99/month
-      </a>
 
-      <a class="btn" href="https://buy.stripe.com/8x2dR88gfcWE5eMexecIE02" target="_blank">
-        Premium - $14.99/month
-      </a>
-        <button class="btn" onclick="unlockAI()">
-  Demo Unlock
-</button>
+    <div class="grid">
+      <div class="card">
+        <h3>Weekly Plans</h3>
+        <p>Get simple action steps based on your budget, risk level, and goals.</p>
+      </div>
+
+      <div class="card">
+        <h3>Monthly Roadmaps</h3>
+        <p>Stay consistent with guided investing routines built for real beginners.</p>
+      </div>
+
+      <div class="card">
+        <h3>Goal Tracking</h3>
+        <p>Track short-term profit targets and long-term wealth goals in one place.</p>
+      </div>
+
+      <div class="card" id="pricing">
+        <h3>Choose Your Plan</h3>
+        <p>Start building your investing strategy today</p>
+        <p style="color:#b30d0d; font-size:14px;">
+          Limited early access pricing — lock in before price increases
+        </p>
+
+        <div style="text-align:center; margin-top:15px;">
+          <a class="btn" href="https://buy.stripe.com/9B6aEW1RR9Ks0Ywcp6cIE01" target="_blank">
+            Pro - $9.99/month
+          </a>
+
+          <a class="btn" href="https://buy.stripe.com/8x2dR88gfcWE5eMexecIE02" target="_blank">
+            Premium - $14.99/month
+          </a>
+
+          <button class="btn" onclick="unlockAI()">
+            Demo Unlock
+          </button>
+        </div>
+      </div>
     </div>
-  </div>
-</div>
+
     <div class="ai-tool" id="ai-planner">
-  <h3>AI Investment Plan Generator</h3>
-  <p>
-    Enter your budget, risk level, and investing goal to generate a starter plan.
-  </p>
+      <h3>AI Investment Plan Generator</h3>
+      <p>
+        Enter your budget, risk level, and investing goal to generate a starter plan.
+      </p>
 
-  <p style="color:#b30d0d; font-size:14px;">
-    🔒 Demo version shown below. Paid access will require verified login in the full app.
-  </p>
+      <p style="color:#b30d0d; font-size:14px;">
+        🔒 Demo version shown below. Paid access will require verified login in the full app.
+      </p>
 
-  <!-- LOCKED MESSAGE -->
-  <div id="lockOverlay" style="
-    margin-top:20px;
-    padding:20px;
-    border-radius:14px;
-    background:#111;
-    border:1px solid #1f1f1f;
-  ">
-    <h4>🔒 Locked Feature</h4>
-    <p style="color:#c8c8c8;">
-      Unlock your personalized AI investing plan by upgrading below.
-    </p>
+      <div id="lockOverlay" style="
+        margin-top:20px;
+        padding:20px;
+        border-radius:14px;
+        background:#111;
+        border:1px solid #1f1f1f;
+      ">
+        <h4>🔒 Locked Feature</h4>
+        <p style="color:#c8c8c8;">
+          Unlock your personalized AI investing plan by upgrading below.
+        </p>
 
-    <a class="btn" href="#pricing">Unlock Access</a>
-  </div>
+        <a class="btn" href="#pricing">Unlock Access</a>
+      </div>
 
-  <!-- HIDDEN TOOL -->
-  <div id="aiContent" style="display:none;">
+      <div id="aiContent" style="display:none;">
+        <div class="ai-fields">
+          <input type="number" id="budget" placeholder="Monthly budget ($)" />
 
-    <div class="ai-fields">
-      <input type="number" id="budget" placeholder="Monthly budget ($)" />
+          <select id="risk">
+            <option value="">Select risk level</option>
+            <option value="Low">Low</option>
+            <option value="Medium">Medium</option>
+            <option value="High">High</option>
+          </select>
 
-      <select id="risk">
-        <option value="">Select risk level</option>
-        <option value="Low">Low</option>
-        <option value="Medium">Medium</option>
-        <option value="High">High</option>
-      </select>
+          <select id="goal">
+            <option value="">Select goal</option>
+            <option value="Short-Term">Short-Term</option>
+            <option value="Long-Term">Long-Term</option>
+            <option value="Both">Both</option>
+          </select>
+        </div>
 
-      <select id="goal">
-        <option value="">Select goal</option>
-        <option value="Short-Term">Short-Term</option>
-        <option value="Long-Term">Long-Term</option>
-        <option value="Both">Both</option>
-      </select>
+        <div class="ai-actions">
+          <button class="btn" onclick="generatePlan()">Generate My Plan</button>
+        </div>
+
+        <div class="ai-output" id="planOutput">
+          <h4>Your plan will appear here</h4>
+          <p>Fill out your details and click the button to generate your beginner investing plan.</p>
+        </div>
+      </div>
     </div>
 
-    <div class="ai-actions">
-      <button class="btn" onclick="generatePlan()">Generate My Plan</button>
-    </div>
-
-    <div class="ai-output" id="planOutput">
-      <h4>Your plan will appear here</h4>
-      <p>Fill out your details and click the button to generate your beginner investing plan.</p>
-    </div>
-
-  </div>
-</div>
     <div class="founder" id="founder">
       <h3>Founder</h3>
       <p>
@@ -256,91 +287,92 @@
       © 2026 VestIQAI EL LOBO. All rights reserved.
     </div>
   </div>
+
   <script>
-  function unlockAI() {
-    document.getElementById("lockOverlay").style.display = "none";
-    document.getElementById("aiContent").style.display = "block";
-  }
+    function unlockAI() {
+      document.getElementById("lockOverlay").style.display = "none";
+      document.getElementById("aiContent").style.display = "block";
+    }
 
-  function generatePlan() {
-    const budget = parseFloat(document.getElementById("budget").value);
-    const risk = document.getElementById("risk").value;
-    const goal = document.getElementById("goal").value;
-    const output = document.getElementById("planOutput");
+    function generatePlan() {
+      const budget = parseFloat(document.getElementById("budget").value);
+      const risk = document.getElementById("risk").value;
+      const goal = document.getElementById("goal").value;
+      const output = document.getElementById("planOutput");
 
-    if (!budget || !risk || !goal) {
+      if (!budget || !risk || !goal) {
+        output.innerHTML = `
+          <h4>Missing information</h4>
+          <p>Please enter your monthly budget, risk level, and goal.</p>
+        `;
+        return;
+      }
+
+      let longTermPercent = 0;
+      let shortTermPercent = 0;
+      let safePercent = 0;
+      const weeklyAmount = (budget / 4).toFixed(2);
+
+      if (risk === "Low") {
+        safePercent = 50;
+        longTermPercent = 40;
+        shortTermPercent = 10;
+      } else if (risk === "Medium") {
+        safePercent = 25;
+        longTermPercent = 55;
+        shortTermPercent = 20;
+      } else {
+        safePercent = 10;
+        longTermPercent = 60;
+        shortTermPercent = 30;
+      }
+
+      if (goal === "Short-Term") {
+        shortTermPercent += 15;
+        longTermPercent -= 10;
+        safePercent -= 5;
+      } else if (goal === "Long-Term") {
+        longTermPercent += 15;
+        shortTermPercent -= 10;
+        safePercent -= 5;
+      } else if (goal === "Both") {
+        longTermPercent += 5;
+        shortTermPercent += 5;
+        safePercent -= 10;
+      }
+
+      if (safePercent < 5) safePercent = 5;
+
+      const safeAmount = ((budget * safePercent) / 100).toFixed(2);
+      const longTermAmount = ((budget * longTermPercent) / 100).toFixed(2);
+      const shortTermAmount = ((budget * shortTermPercent) / 100).toFixed(2);
+
+      let strategyText = "";
+
+      if (risk === "Low") {
+        strategyText = "Focus on consistency, lower volatility, and steady long-term habits.";
+      } else if (risk === "Medium") {
+        strategyText = "Balance growth with stability using a mix of long-term and flexible investing.";
+      } else {
+        strategyText = "Aim for stronger growth with higher volatility and a smaller safety cushion.";
+      }
+
       output.innerHTML = `
-        <h4>Missing information</h4>
-        <p>Please enter your monthly budget, risk level, and goal.</p>
+        <h4>Your Beginner Investing Plan</h4>
+        <p><strong>Monthly Budget:</strong> $${budget.toFixed(2)}</p>
+        <p><strong>Suggested Weekly Contribution:</strong> $${weeklyAmount}</p>
+        <p><strong>Risk Level:</strong> ${risk}</p>
+        <p><strong>Goal Focus:</strong> ${goal}</p>
+        <hr style="border-color:#222; margin:16px 0;">
+        <p><strong>Safe / Cash Reserve:</strong> $${safeAmount} (${safePercent}%)</p>
+        <p><strong>Long-Term Investing:</strong> $${longTermAmount} (${longTermPercent}%)</p>
+        <p><strong>Short-Term Opportunity Bucket:</strong> $${shortTermAmount} (${shortTermPercent}%)</p>
+        <hr style="border-color:#222; margin:16px 0;">
+        <p><strong>Strategy:</strong> ${strategyText}</p>
+        <p><strong>Weekly Action:</strong> Move $${weeklyAmount} into your investing plan once per week and review progress at the end of each month.</p>
+        <p><strong>Reminder:</strong> Stay disciplined, avoid emotional decisions, and review your budget regularly.</p>
       `;
-      return;
     }
-
-    let longTermPercent = 0;
-    let shortTermPercent = 0;
-    let safePercent = 0;
-    let weeklyAmount = (budget / 4).toFixed(2);
-
-    if (risk === "Low") {
-      safePercent = 50;
-      longTermPercent = 40;
-      shortTermPercent = 10;
-    } else if (risk === "Medium") {
-      safePercent = 25;
-      longTermPercent = 55;
-      shortTermPercent = 20;
-    } else {
-      safePercent = 10;
-      longTermPercent = 60;
-      shortTermPercent = 30;
-    }
-
-    if (goal === "Short-Term") {
-      shortTermPercent += 15;
-      longTermPercent -= 10;
-      safePercent -= 5;
-    } else if (goal === "Long-Term") {
-      longTermPercent += 15;
-      shortTermPercent -= 10;
-      safePercent -= 5;
-    } else if (goal === "Both") {
-      longTermPercent += 5;
-      shortTermPercent += 5;
-      safePercent -= 10;
-    }
-
-    if (safePercent < 5) safePercent = 5;
-
-    const safeAmount = ((budget * safePercent) / 100).toFixed(2);
-    const longTermAmount = ((budget * longTermPercent) / 100).toFixed(2);
-    const shortTermAmount = ((budget * shortTermPercent) / 100).toFixed(2);
-
-    let strategyText = "";
-
-    if (risk === "Low") {
-      strategyText = "Focus on consistency, lower volatility, and steady long-term habits.";
-    } else if (risk === "Medium") {
-      strategyText = "Balance growth with stability using a mix of long-term and flexible investing.";
-    } else {
-      strategyText = "Aim for stronger growth with higher volatility and a smaller safety cushion.";
-    }
-
-    output.innerHTML = `
-      <h4>Your Beginner Investing Plan</h4>
-      <p><strong>Monthly Budget:</strong> $${budget.toFixed(2)}</p>
-      <p><strong>Suggested Weekly Contribution:</strong> $${weeklyAmount}</p>
-      <p><strong>Risk Level:</strong> ${risk}</p>
-      <p><strong>Goal Focus:</strong> ${goal}</p>
-      <hr style="border-color:#222; margin:16px 0;">
-      <p><strong>Safe / Cash Reserve:</strong> $${safeAmount} (${safePercent}%)</p>
-      <p><strong>Long-Term Investing:</strong> $${longTermAmount} (${longTermPercent}%)</p>
-      <p><strong>Short-Term Opportunity Bucket:</strong> $${shortTermAmount} (${shortTermPercent}%)</p>
-      <hr style="border-color:#222; margin:16px 0;">
-      <p><strong>Strategy:</strong> ${strategyText}</p>
-      <p><strong>Weekly Action:</strong> Move $${weeklyAmount} into your investing plan once per week and review progress at the end of each month.</p>
-      <p><strong>Reminder:</strong> Stay disciplined, avoid emotional decisions, and review your budget regularly.</p>
-    `;
-  }
-</script>
+  </script>
 </body>
 </html>
