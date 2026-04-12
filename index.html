@@ -212,8 +212,12 @@
           </a>
 
           <button class="btn" onclick="unlockAI()">
-            Demo Unlock
-          </button>
+  Demo Unlock
+</button>
+
+<button class="btn" onclick="paidUnlockAI()">
+  Paid Unlock
+</button>
         </div>
       </div>
     </div>
@@ -290,12 +294,24 @@
   </div>
 
   <script>
+  let accessMode = "demo";
+
+  function showPlanner() {
+    document.getElementById("lockOverlay").style.display = "none";
+    document.getElementById("aiContent").style.display = "block";
+  }
+
   function unlockAI() {
+    accessMode = "demo";
+    showPlanner();
+  }
+
+  function paidUnlockAI() {
     if (localStorage.getItem("paidUser") === "true") {
-      document.getElementById("lockOverlay").style.display = "none";
-      document.getElementById("aiContent").style.display = "block";
+      accessMode = "paid";
+      showPlanner();
     } else {
-      alert("Please complete your purchase first to unlock access.");
+      alert("Please complete your purchase first to unlock paid access.");
     }
   }
 
@@ -364,8 +380,42 @@
       strategyText = "Aim for stronger growth with higher volatility and a smaller safety cushion.";
     }
 
+    if (accessMode === "demo") {
+      output.innerHTML = `
+        <h4>📅 Your 1-Week Demo Plan</h4>
+
+        <p><strong>Weekly Budget Focus:</strong> $${weeklyAmount}</p>
+        <p><strong>Risk Level:</strong> ${risk}</p>
+        <p><strong>Goal:</strong> ${goal}</p>
+
+        <hr style="border-color:#222; margin:16px 0;">
+
+        <p><strong>Week 1 Demo Breakdown:</strong></p>
+        <p><strong>🛡 Safe Reserve:</strong> $${(safeAmount / 4).toFixed(2)}</p>
+        <p><strong>📈 Long-Term Growth:</strong> $${(longTermAmount / 4).toFixed(2)}</p>
+        <p><strong>⚡ Short-Term Opportunities:</strong> $${(shortTermAmount / 4).toFixed(2)}</p>
+
+        <hr style="border-color:#222; margin:16px 0;">
+
+        <p><strong>🧠 1-Week Strategy:</strong></p>
+        <p>${strategyText}</p>
+
+        <p><strong>✅ This Week’s Action Step:</strong></p>
+        <p>Set aside <strong>$${weeklyAmount}</strong> this week and split it according to the amounts above.</p>
+
+        <p style="color:#b30d0d; font-size:14px; margin-top:12px;">
+          Demo access only shows a 1-week starter plan. Upgrade for the full monthly investing roadmap.
+        </p>
+
+        <p style="color:#8e8e8e; font-size:14px; margin-top:10px;">
+          Powered by VestIQAI EL LOBO 🐺
+        </p>
+      `;
+      return;
+    }
+
     output.innerHTML = `
-      <h4>📊 Your Personalized Investing Plan</h4>
+      <h4>📊 Your Full Personalized Investing Plan</h4>
 
       <p><strong>Monthly Budget:</strong> $${budget.toFixed(2)}</p>
       <p><strong>Weekly Contribution:</strong> $${weeklyAmount}</p>
@@ -385,6 +435,12 @@
 
       <p><strong>📅 Weekly Action Plan:</strong></p>
       <p>Set aside <strong>$${weeklyAmount}</strong> every week and stay consistent. Review your progress every 30 days.</p>
+
+      <p><strong>📆 Monthly Roadmap:</strong></p>
+      <p>Week 1: Start contributions and build consistency.</p>
+      <p>Week 2: Review spending and continue your plan.</p>
+      <p>Week 3: Stay disciplined and avoid emotional decisions.</p>
+      <p>Week 4: Review progress and prepare next month’s allocations.</p>
 
       <p><strong>⚠️ Risk Reminder:</strong></p>
       <p>Markets fluctuate. Stay disciplined and avoid emotional decisions.</p>
