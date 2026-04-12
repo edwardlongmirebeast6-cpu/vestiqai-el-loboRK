@@ -1,0 +1,10 @@
+{
+  "name": "vestiqaiellobork",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "@supabase/supabase-js": "^2.57.4",
+    "openai": "^4.104.0",
+    "stripe": "^18.4.0"
+  }
+}
