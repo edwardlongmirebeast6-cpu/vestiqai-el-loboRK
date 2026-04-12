@@ -152,79 +152,93 @@
   </div>
 
   <script>
-    const supabaseUrl = "https://kquoernnqusqbviicymg.supabase.co";
-    const supabaseAnonKey = "PASTE_YOUR_PUBLISHABLE_KEY_HERE";
-    const supabase = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
+  const supabaseUrl = "https://kquoernnqusqbviicymg.supabase.co";
+  const supabaseAnonKey = "sb_publishable_OaS8RdnSO95xX3XfLFfRGw_WlkonKoF";
+  const supabase = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
 
-    async function loadUser() {
-      const { data } = await supabase.auth.getUser();
-      const user = data.user;
+  async function loadUser() {
+    const { data } = await supabase.auth.getUser();
+    const user = data.user;
 
-      if (!user) {
-        window.location.href = "/login.html";
-        return null;
-      }
-
-      document.getElementById("userEmail").textContent = user.email;
-      return user;
-    }
-
-    async function loadSubscription() {
-      const { data: { session } } = await supabase.auth.getSession();
-      const res = await fetch("/.netlify/functions/get-session", {
-        headers: {
-          Authorization: `Bearer ${session.access_token}`
-        }
-      });
-      const data = await res.json();
-
-      document.getElementById("subscriptionStatus").textContent =
-        data.subscription_status || "No subscription found";
-
-      document.getElementById("subscriptionNote").textContent =
-        data.subscription_status === "active"
-          ? "Full access enabled."
-          : "Upgrade to unlock paid features.";
-    }
-
-    async function generatePlan() {
-      const budget = parseFloat(document.getElementById("budget").value);
-      const risk = document.getElementById("risk").value;
-      const goal = document.getElementById("goal").value;
-      const output = document.getElementById("output");
-
-      output.innerHTML = "Generating your AI plan...";
-
-      const { data: { session } } = await supabase.auth.getSession();
-
-      const check = await fetch("/.netlify/functions/get-session", {
-        headers: {
-          Authorization: `Bearer ${session.access_token}`
-        }
-      });
-      const profile = await check.json();
-
-      const accessMode = profile.subscription_status === "active" ? "paid" : "demo";
-
-      const response = await fetch("/.netlify/functions/generate-plan", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ budget, risk, goal, accessMode })
-      });
-
-      const data = await response.json();
-      output.innerHTML = data.html || "Unable to generate plan.";
-    }
-
-    async function logout() {
-      await supabase.auth.signOut();
+    if (!user) {
       window.location.href = "/login.html";
+      return null;
     }
 
-    window.onload = async function () {
-      await loadUser();
-      await loadSubscription();
-    };
-  </script>
+    document.getElementById("userEmail").textContent = user.email;
+    return user;
+  }
+
+  async function loadSubscription() {
+    const { data: { session } } = await supabase.auth.getSession();
+
+    if (!session) {
+      document.getElementById("subscriptionStatus").textContent = "Not logged in";
+      document.getElementById("subscriptionNote").textContent = "";
+      return;
+    }
+
+    const res = await fetch("/.netlify/functions/get-session", {
+      headers: {
+        Authorization: `Bearer ${session.access_token}`
+      }
+    });
+
+    const data = await res.json();
+
+    document.getElementById("subscriptionStatus").textContent =
+      data.subscription_status || "No subscription found";
+
+    document.getElementById("subscriptionNote").textContent =
+      data.subscription_status === "active"
+        ? "Full access enabled."
+        : "Upgrade to unlock paid features.";
+  }
+
+  async function generatePlan() {
+    const budget = parseFloat(document.getElementById("budget").value);
+    const risk = document.getElementById("risk").value;
+    const goal = document.getElementById("goal").value;
+    const output = document.getElementById("output");
+
+    output.innerHTML = "Generating your AI plan...";
+
+    const { data: { session } } = await supabase.auth.getSession();
+
+    if (!session) {
+      output.innerHTML = "Please log in first.";
+      return;
+    }
+
+    const check = await fetch("/.netlify/functions/get-session", {
+      headers: {
+        Authorization: `Bearer ${session.access_token}`
+      }
+    });
+
+    const profile = await check.json();
+
+    const accessMode = profile.subscription_status === "active" ? "paid" : "demo";
+
+    const response = await fetch("/.netlify/functions/generate-plan", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ budget, risk, goal, accessMode })
+    });
+
+    const data = await response.json();
+    output.innerHTML = data.html || "Unable to generate plan.";
+  }
+
+  async function logout() {
+    await supabase.auth.signOut();
+    window.location.href = "/login.html";
+  }
+
+  window.onload = async function () {
+    await loadUser();
+    await loadSubscription();
+  };
+</script>
 </body>
 </html>
