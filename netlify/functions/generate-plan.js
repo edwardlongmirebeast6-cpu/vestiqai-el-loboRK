@@ -1,60 +1,55 @@
 exports.handler = async (event) => {
+  // Only allow POST requests
   if (event.httpMethod !== "POST") {
     return {
       statusCode: 405,
-      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ error: "Method not allowed" }),
     };
   }
 
   try {
-    const { budget, risk, goal, accessMode } = JSON.parse(event.body || "{}");
+    const { budget, risk, goal, accessMode } = JSON.parse(event.body);
 
     if (!budget || !risk || !goal) {
       return {
         statusCode: 400,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ error: "Missing budget, risk, or goal" }),
+        body: JSON.stringify({ error: "Missing inputs" }),
       };
     }
 
     const isDemo = accessMode !== "paid";
 
     const planScope = isDemo
-      ? "Return only a 1-week demo investing plan."
-      : "Return a full monthly investing plan with weekly breakdown.";
+      ? "Return only a 1-week beginner investing plan."
+      : "Return a full 4-week monthly investing plan with weekly breakdown.";
 
     const prompt = `
-You are an investing planning assistant for beginners.
-Do not provide guaranteed returns.
-Do not claim certainty.
-Do not present this as licensed financial advice.
-Be clear, practical, beginner-friendly, and encouraging.
+You are an investing planner for beginners.
 
-User inputs:
-- Monthly budget: $${budget}
-- Risk level: ${risk}
+User:
+- Budget: $${budget}
+- Risk: ${risk}
 - Goal: ${goal}
 
 Instructions:
 - ${planScope}
-- Focus on structure, discipline, and beginner-friendly investing habits.
+- Keep it simple, structured, and beginner-friendly
 - Include:
   1. Plan title
-  2. Budget summary
-  3. Allocation suggestion
-  4. Strategy insight
-  5. Action steps
-  6. Risk reminder
-- Keep it concise and premium.
-- Return plain HTML only using tags like h4, p, strong, hr, ul, li.
+  2. Budget breakdown
+  3. Strategy
+  4. Action steps
+  5. Risk reminder
+- Format in clean HTML only (h4, p, strong, hr)
+
+No fluff. No financial guarantees.
 `;
 
     const response = await fetch("https://api.openai.com/v1/responses", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
         "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`,
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         model: "gpt-5.4-mini",
@@ -62,33 +57,21 @@ Instructions:
       }),
     });
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      return {
-        statusCode: 500,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ error: "OpenAI request failed", details: errorText }),
-      };
-    }
-
     const data = await response.json();
-
-    const html =
-      data.output_text ||
-      "<h4>Plan unavailable</h4><p>We couldn't generate your plan right now.</p>";
 
     return {
       statusCode: 200,
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ html }),
+      body: JSON.stringify({
+        html: data.output_text || "<p>Error generating plan.</p>",
+      }),
     };
-  } catch (error) {
+
+  } catch (err) {
     return {
       statusCode: 500,
-      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         error: "Server error",
-        details: error.message,
+        details: err.message,
       }),
     };
   }
