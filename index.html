@@ -291,8 +291,12 @@
 
   <script>
   function unlockAI() {
-    document.getElementById("lockOverlay").style.display = "none";
-    document.getElementById("aiContent").style.display = "block";
+    if (localStorage.getItem("paidUser") === "true") {
+      document.getElementById("lockOverlay").style.display = "none";
+      document.getElementById("aiContent").style.display = "block";
+    } else {
+      alert("Please complete your purchase first to unlock access.");
+    }
   }
 
   function generatePlan() {
@@ -391,5 +395,5 @@
     `;
   }
 </script>
-</body>
+</ body>
 </html>
