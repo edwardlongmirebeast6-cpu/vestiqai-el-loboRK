@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Payment Successful | VestIQAI EL LOBO</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #050505;
+      color: #f5f5f5;
+      text-align: center;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 60px 20px;
+    }
+
+    .logo {
+      max-width: 280px;
+      width: 100%;
+      margin: 0 auto 24px;
+      display: block;
+      border-radius: 18px;
+    }
+
+    .card {
+      background: #111111;
+      border: 1px solid #1f1f1f;
+      border-radius: 18px;
+      padding: 32px 24px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+    }
+
+    h1 {
+      font-size: 40px;
+      margin-bottom: 10px;
+      letter-spacing: 1px;
+    }
+
+    h2 {
+      color: #b30d0d;
+      margin-top: 0;
+      margin-bottom: 20px;
+    }
+
+    p {
+      color: #c8c8c8;
+      line-height: 1.7;
+      max-width: 620px;
+      margin: 0 auto 18px;
+    }
+
+    .btn {
+      display: inline-block;
+      background: #b30d0d;
+      color: white;
+      padding: 14px 22px;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: bold;
+      margin: 10px;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn:hover {
+      background: #8f0a0a;
+    }
+
+    .small {
+      color: #8e8e8e;
+      font-size: 14px;
+      margin-top: 20px;
+    }
+
+    .steps {
+      text-align: left;
+      max-width: 520px;
+      margin: 30px auto 0;
+      color: #d7d7d7;
+      line-height: 1.8;
+    }
+
+    .steps li {
+      margin-bottom: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <img class="logo" src="logo-main.PNG" alt="VestIQAI EL LOBO logo" />
+
+    <div class="card">
+      <h1>Payment Successful 🔥</h1>
+      <h2>Welcome to VestIQAI EL LOBO</h2>
+
+      <p>
+        Your payment was received successfully. You now have access to the next step
+        of your VestIQAI EL LOBO experience.
+      </p>
+
+      <p>
+        Right now, the planner on the main site is still a demo version. This page
+        confirms your purchase and sends you back to the site while we continue building
+        the full verified member experience.
+      </p>
+
+      <ol class="steps">
+        <li>Return to the homepage</li>
+        <li>Use the AI planner demo</li>
+        <li>Save your receipt from Stripe for your records</li>
+        <li>Watch for upgraded paid-user features soon</li>
+      </ol>
+
+      <a class="btn" href="/">Return to Homepage</a>
+      <a class="btn" href="/#ai-planner">Go to AI Planner</a>
+
+      <p class="small">
+        Need help? Contact support through your website contact method once added.
+      </p>
+    </div>
+  </div>
+
+  <script>
+    localStorage.setItem("paidUser", "true");
+  </script>
+</body>
+</html>
