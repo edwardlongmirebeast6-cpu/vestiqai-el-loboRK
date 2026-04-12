@@ -203,21 +203,22 @@
         </p>
 
         <div style="text-align:center; margin-top:15px;">
-          <a class="btn" href="https://buy.stripe.com/9B6aEW1RR9Ks0Ywcp6cIE01" target="_blank">
+          <!-- FIXED: 9.99 and 14.99 links swapped -->
+          <a class="btn" href="https://buy.stripe.com/8x2dR88gfcWE5eMexecIE02" target="_blank">
             Pro - $9.99/month
           </a>
 
-          <a class="btn" href="https://buy.stripe.com/8x2dR88gfcWE5eMexecIE02" target="_blank">
+          <a class="btn" href="https://buy.stripe.com/9B6aEW1RR9Ks0Ywcp6cIE01" target="_blank">
             Premium - $14.99/month
           </a>
 
           <button class="btn" onclick="unlockAI()">
-  Demo Unlock
-</button>
+            Demo Unlock
+          </button>
 
-<button class="btn" onclick="paidUnlockAI()">
-  Paid Unlock
-</button>
+          <button class="btn" onclick="paidUnlockAI()">
+            Paid Unlock
+          </button>
         </div>
       </div>
     </div>
@@ -294,162 +295,162 @@
   </div>
 
   <script>
-  let accessMode = "demo";
+    let accessMode = "demo";
 
-  function showPlanner() {
-    document.getElementById("lockOverlay").style.display = "none";
-    document.getElementById("aiContent").style.display = "block";
-  }
+    function showPlanner() {
+      document.getElementById("lockOverlay").style.display = "none";
+      document.getElementById("aiContent").style.display = "block";
+    }
 
-  function unlockAI() {
-    accessMode = "demo";
-    showPlanner();
-  }
-
-  function paidUnlockAI() {
-    if (localStorage.getItem("paidUser") === "true") {
-      accessMode = "paid";
+    function unlockAI() {
+      accessMode = "demo";
       showPlanner();
-    } else {
-      alert("Please complete your purchase first to unlock paid access.");
     }
-  }
 
-  function generatePlan() {
-    const budget = parseFloat(document.getElementById("budget").value);
-    const risk = document.getElementById("risk").value;
-    const goal = document.getElementById("goal").value;
-    const output = document.getElementById("planOutput");
+    function paidUnlockAI() {
+      if (localStorage.getItem("paidUser") === "true") {
+        accessMode = "paid";
+        showPlanner();
+      } else {
+        alert("Please complete your purchase first to unlock paid access.");
+      }
+    }
 
-    output.innerHTML = "<p>Analyzing your inputs...</p>";
+    function generatePlan() {
+      const budget = parseFloat(document.getElementById("budget").value);
+      const risk = document.getElementById("risk").value;
+      const goal = document.getElementById("goal").value;
+      const output = document.getElementById("planOutput");
 
-    if (!budget || !risk || !goal) {
+      output.innerHTML = "<p>Analyzing your inputs...</p>";
+
+      if (!budget || !risk || !goal) {
+        output.innerHTML = `
+          <h4>Missing information</h4>
+          <p>Please enter your monthly budget, risk level, and goal.</p>
+        `;
+        return;
+      }
+
+      let longTermPercent = 0;
+      let shortTermPercent = 0;
+      let safePercent = 0;
+      const weeklyAmount = (budget / 4).toFixed(2);
+
+      if (risk === "Low") {
+        safePercent = 50;
+        longTermPercent = 40;
+        shortTermPercent = 10;
+      } else if (risk === "Medium") {
+        safePercent = 25;
+        longTermPercent = 55;
+        shortTermPercent = 20;
+      } else {
+        safePercent = 10;
+        longTermPercent = 60;
+        shortTermPercent = 30;
+      }
+
+      if (goal === "Short-Term") {
+        shortTermPercent += 15;
+        longTermPercent -= 10;
+        safePercent -= 5;
+      } else if (goal === "Long-Term") {
+        longTermPercent += 15;
+        shortTermPercent -= 10;
+        safePercent -= 5;
+      } else if (goal === "Both") {
+        longTermPercent += 5;
+        shortTermPercent += 5;
+        safePercent -= 10;
+      }
+
+      if (safePercent < 5) safePercent = 5;
+
+      const safeAmount = ((budget * safePercent) / 100).toFixed(2);
+      const longTermAmount = ((budget * longTermPercent) / 100).toFixed(2);
+      const shortTermAmount = ((budget * shortTermPercent) / 100).toFixed(2);
+
+      let strategyText = "";
+
+      if (risk === "Low") {
+        strategyText = "Focus on consistency, lower volatility, and steady long-term habits.";
+      } else if (risk === "Medium") {
+        strategyText = "Balance growth with stability using a mix of long-term and flexible investing.";
+      } else {
+        strategyText = "Aim for stronger growth with higher volatility and a smaller safety cushion.";
+      }
+
+      if (accessMode === "demo") {
+        output.innerHTML = `
+          <h4>📅 Your 1-Week Demo Plan</h4>
+
+          <p><strong>Weekly Budget Focus:</strong> $${weeklyAmount}</p>
+          <p><strong>Risk Level:</strong> ${risk}</p>
+          <p><strong>Goal:</strong> ${goal}</p>
+
+          <hr style="border-color:#222; margin:16px 0;">
+
+          <p><strong>Week 1 Demo Breakdown:</strong></p>
+          <p><strong>🛡 Safe Reserve:</strong> $${(safeAmount / 4).toFixed(2)}</p>
+          <p><strong>📈 Long-Term Growth:</strong> $${(longTermAmount / 4).toFixed(2)}</p>
+          <p><strong>⚡ Short-Term Opportunities:</strong> $${(shortTermAmount / 4).toFixed(2)}</p>
+
+          <hr style="border-color:#222; margin:16px 0;">
+
+          <p><strong>🧠 1-Week Strategy:</strong></p>
+          <p>${strategyText}</p>
+
+          <p><strong>✅ This Week’s Action Step:</strong></p>
+          <p>Set aside <strong>$${weeklyAmount}</strong> this week and split it according to the amounts above.</p>
+
+          <p style="color:#b30d0d; font-size:14px; margin-top:12px;">
+            Demo access only shows a 1-week starter plan. Upgrade for the full monthly investing roadmap.
+          </p>
+
+          <p style="color:#8e8e8e; font-size:14px; margin-top:10px;">
+            Powered by VestIQAI EL LOBO 🐺
+          </p>
+        `;
+        return;
+      }
+
       output.innerHTML = `
-        <h4>Missing information</h4>
-        <p>Please enter your monthly budget, risk level, and goal.</p>
-      `;
-      return;
-    }
+        <h4>📊 Your Full Personalized Investing Plan</h4>
 
-    let longTermPercent = 0;
-    let shortTermPercent = 0;
-    let safePercent = 0;
-    const weeklyAmount = (budget / 4).toFixed(2);
-
-    if (risk === "Low") {
-      safePercent = 50;
-      longTermPercent = 40;
-      shortTermPercent = 10;
-    } else if (risk === "Medium") {
-      safePercent = 25;
-      longTermPercent = 55;
-      shortTermPercent = 20;
-    } else {
-      safePercent = 10;
-      longTermPercent = 60;
-      shortTermPercent = 30;
-    }
-
-    if (goal === "Short-Term") {
-      shortTermPercent += 15;
-      longTermPercent -= 10;
-      safePercent -= 5;
-    } else if (goal === "Long-Term") {
-      longTermPercent += 15;
-      shortTermPercent -= 10;
-      safePercent -= 5;
-    } else if (goal === "Both") {
-      longTermPercent += 5;
-      shortTermPercent += 5;
-      safePercent -= 10;
-    }
-
-    if (safePercent < 5) safePercent = 5;
-
-    const safeAmount = ((budget * safePercent) / 100).toFixed(2);
-    const longTermAmount = ((budget * longTermPercent) / 100).toFixed(2);
-    const shortTermAmount = ((budget * shortTermPercent) / 100).toFixed(2);
-
-    let strategyText = "";
-
-    if (risk === "Low") {
-      strategyText = "Focus on consistency, lower volatility, and steady long-term habits.";
-    } else if (risk === "Medium") {
-      strategyText = "Balance growth with stability using a mix of long-term and flexible investing.";
-    } else {
-      strategyText = "Aim for stronger growth with higher volatility and a smaller safety cushion.";
-    }
-
-    if (accessMode === "demo") {
-      output.innerHTML = `
-        <h4>📅 Your 1-Week Demo Plan</h4>
-
-        <p><strong>Weekly Budget Focus:</strong> $${weeklyAmount}</p>
+        <p><strong>Monthly Budget:</strong> $${budget.toFixed(2)}</p>
+        <p><strong>Weekly Contribution:</strong> $${weeklyAmount}</p>
         <p><strong>Risk Level:</strong> ${risk}</p>
         <p><strong>Goal:</strong> ${goal}</p>
 
         <hr style="border-color:#222; margin:16px 0;">
 
-        <p><strong>Week 1 Demo Breakdown:</strong></p>
-        <p><strong>🛡 Safe Reserve:</strong> $${(safeAmount / 4).toFixed(2)}</p>
-        <p><strong>📈 Long-Term Growth:</strong> $${(longTermAmount / 4).toFixed(2)}</p>
-        <p><strong>⚡ Short-Term Opportunities:</strong> $${(shortTermAmount / 4).toFixed(2)}</p>
+        <p><strong>🛡 Safe Reserve:</strong> $${safeAmount} (${safePercent}%)</p>
+        <p><strong>📈 Long-Term Growth:</strong> $${longTermAmount} (${longTermPercent}%)</p>
+        <p><strong>⚡ Short-Term Opportunities:</strong> $${shortTermAmount} (${shortTermPercent}%)</p>
 
         <hr style="border-color:#222; margin:16px 0;">
 
-        <p><strong>🧠 1-Week Strategy:</strong></p>
+        <p><strong>🧠 Strategy Insight:</strong></p>
         <p>${strategyText}</p>
 
-        <p><strong>✅ This Week’s Action Step:</strong></p>
-        <p>Set aside <strong>$${weeklyAmount}</strong> this week and split it according to the amounts above.</p>
+        <p><strong>📅 Weekly Action Plan:</strong></p>
+        <p>Set aside <strong>$${weeklyAmount}</strong> every week and stay consistent. Review your progress every 30 days.</p>
 
-        <p style="color:#b30d0d; font-size:14px; margin-top:12px;">
-          Demo access only shows a 1-week starter plan. Upgrade for the full monthly investing roadmap.
-        </p>
+        <p><strong>📆 Monthly Roadmap:</strong></p>
+        <p>Week 1: Start contributions and build consistency.</p>
+        <p>Week 2: Review spending and continue your plan.</p>
+        <p>Week 3: Stay disciplined and avoid emotional decisions.</p>
+        <p>Week 4: Review progress and prepare next month’s allocations.</p>
+
+        <p><strong>⚠️ Risk Reminder:</strong></p>
+        <p>Markets fluctuate. Stay disciplined and avoid emotional decisions.</p>
 
         <p style="color:#8e8e8e; font-size:14px; margin-top:10px;">
           Powered by VestIQAI EL LOBO 🐺
         </p>
       `;
-      return;
     }
-
-    output.innerHTML = `
-      <h4>📊 Your Full Personalized Investing Plan</h4>
-
-      <p><strong>Monthly Budget:</strong> $${budget.toFixed(2)}</p>
-      <p><strong>Weekly Contribution:</strong> $${weeklyAmount}</p>
-      <p><strong>Risk Level:</strong> ${risk}</p>
-      <p><strong>Goal:</strong> ${goal}</p>
-
-      <hr style="border-color:#222; margin:16px 0;">
-
-      <p><strong>🛡 Safe Reserve:</strong> $${safeAmount} (${safePercent}%)</p>
-      <p><strong>📈 Long-Term Growth:</strong> $${longTermAmount} (${longTermPercent}%)</p>
-      <p><strong>⚡ Short-Term Opportunities:</strong> $${shortTermAmount} (${shortTermPercent}%)</p>
-
-      <hr style="border-color:#222; margin:16px 0;">
-
-      <p><strong>🧠 Strategy Insight:</strong></p>
-      <p>${strategyText}</p>
-
-      <p><strong>📅 Weekly Action Plan:</strong></p>
-      <p>Set aside <strong>$${weeklyAmount}</strong> every week and stay consistent. Review your progress every 30 days.</p>
-
-      <p><strong>📆 Monthly Roadmap:</strong></p>
-      <p>Week 1: Start contributions and build consistency.</p>
-      <p>Week 2: Review spending and continue your plan.</p>
-      <p>Week 3: Stay disciplined and avoid emotional decisions.</p>
-      <p>Week 4: Review progress and prepare next month’s allocations.</p>
-
-      <p><strong>⚠️ Risk Reminder:</strong></p>
-      <p>Markets fluctuate. Stay disciplined and avoid emotional decisions.</p>
-
-      <p style="color:#8e8e8e; font-size:14px; margin-top:10px;">
-        Powered by VestIQAI EL LOBO 🐺
-      </p>
-    `;
-  }
-</script>
-</ body>
+  </script>
+</body>
 </html>
