@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login | VestIQAI EL LOBO</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #050505;
+      color: #f5f5f5;
+      text-align: center;
+    }
+    .container {
+      max-width: 520px;
+      margin: 0 auto;
+      padding: 60px 20px;
+    }
+    .logo {
+      max-width: 260px;
+      width: 100%;
+      margin: 0 auto 24px;
+      display: block;
+      border-radius: 18px;
+    }
+    .card {
+      background: #111111;
+      border: 1px solid #1f1f1f;
+      border-radius: 18px;
+      padding: 28px;
+      text-align: left;
+      box-shadow: 0 10px 30px rgba(0,0,0,.35);
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 12px;
+    }
+    p {
+      color: #c8c8c8;
+      line-height: 1.6;
+      text-align: center;
+    }
+    input {
+      width: 100%;
+      padding: 14px;
+      border-radius: 10px;
+      border: 1px solid #2a2a2a;
+      background: #0d0d0d;
+      color: white;
+      box-sizing: border-box;
+      margin-bottom: 12px;
+    }
+    .btn {
+      width: 100%;
+      background: #b30d0d;
+      color: white;
+      padding: 14px 22px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+      margin-top: 8px;
+    }
+    .btn:hover {
+      background: #8f0a0a;
+    }
+    .status {
+      margin-top: 14px;
+      color: #b30d0d;
+      font-size: 14px;
+      text-align: center;
+    }
+    .link {
+      display: block;
+      margin-top: 16px;
+      text-align: center;
+      color: #c8c8c8;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <img class="logo" src="logo-main.PNG" alt="VestIQAI EL LOBO logo" />
+    <div class="card">
+      <h1>Login / Sign Up</h1>
+      <p>Access your dashboard, subscription, and AI plans.</p>
+
+      <input id="email" type="email" placeholder="Email address" />
+      <input id="password" type="password" placeholder="Password" />
+
+      <button class="btn" onclick="signUp()">Create Account</button>
+      <button class="btn" onclick="signIn()">Login</button>
+
+      <div id="status" class="status"></div>
+      <a class="link" href="/">← Back to homepage</a>
+    </div>
+  </div>
+
+  <script>
+    const supabaseUrl = "YOUR_SUPABASE_URL";
+    const supabaseAnonKey = "YOUR_SUPABASE_ANON_KEY";
+    const supabase = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
+
+    async function signUp() {
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
+      const status = document.getElementById("status");
+
+      status.textContent = "Creating account...";
+
+      const { error } = await supabase.auth.signUp({ email, password });
+
+      if (error) {
+        status.textContent = error.message;
+        return;
+      }
+
+      status.textContent = "Account created. Check your email if confirmation is enabled.";
+    }
+
+    async function signIn() {
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
+      const status = document.getElementById("status");
+
+      status.textContent = "Logging in...";
+
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+
+      if (error) {
+        status.textContent = error.message;
+        return;
+      }
+
+      window.location.href = "/dashboard.html";
+    }
+  </script>
+</body>
+</html>
