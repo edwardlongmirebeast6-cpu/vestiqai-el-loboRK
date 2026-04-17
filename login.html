@@ -110,8 +110,8 @@
       <input id="email" type="email" placeholder="Email address" autocomplete="email" />
       <input id="password" type="password" placeholder="Password" autocomplete="current-password" />
 
-      <button id="signupBtn" class="btn" type="button">Create Account</button>
-      <button id="loginBtn" class="btn" type="button">Login</button>
+      <button class="btn" type="button" onclick="signUp()">Create Account</button>
+      <button class="btn" type="button" onclick="signIn()">Login</button>
 
       <div id="status" class="status"></div>
       <a class="link" href="/">← Back to homepage</a>
@@ -122,35 +122,21 @@
     const SUPABASE_URL = "https://kquoernnqusqbviicymg.supabase.co";
     const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_OaS8RdnSO95xX3XfLFfRGw_WlkonKoF";
 
-    let supabase;
+    const statusEl = document.getElementById("status");
 
     function setStatus(message, success = false) {
-      const status = document.getElementById("status");
-      status.textContent = message;
-      status.className = success ? "status success" : "status";
+      statusEl.textContent = message;
+      statusEl.className = success ? "status success" : "status";
     }
 
-    function initClient() {
-      if (!window.supabase || !window.supabase.createClient) {
-        setStatus("Supabase failed to load. Refresh and try again.");
-        return false;
-      }
-
-      supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
-      return true;
+    if (!window.supabase || !window.supabase.createClient) {
+      setStatus("Supabase script failed to load.");
     }
 
-    async function checkExistingSession() {
-      try {
-        const { data, error } = await supabase.auth.getSession();
-        if (error) return;
-        if (data?.session) {
-          window.location.href = "/dashboard.html";
-        }
-      } catch (err) {
-        console.error("Session check failed:", err);
-      }
-    }
+    const supabase = window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_PUBLISHABLE_KEY
+    );
 
     async function signUp() {
       const email = document.getElementById("email").value.trim();
@@ -179,18 +165,18 @@
           return;
         }
 
-        if (data?.user && !data.session) {
-          setStatus("Account created. Check your email to confirm your account if email confirmation is enabled.", true);
+        if (data?.user && !data?.session) {
+          setStatus("Account created. You can log in now.", true);
           return;
         }
 
         setStatus("Account created successfully. Redirecting...", true);
         setTimeout(() => {
           window.location.href = "/dashboard.html";
-        }, 800);
+        }, 700);
       } catch (err) {
         console.error(err);
-        setStatus("Something went wrong creating your account.");
+        setStatus("Signup failed. Check your connection and Supabase settings.");
       }
     }
 
@@ -222,18 +208,22 @@
         }, 500);
       } catch (err) {
         console.error(err);
-        setStatus("Something went wrong logging in.");
+        setStatus("Login failed. Check your connection and Supabase settings.");
       }
     }
 
-    window.addEventListener("DOMContentLoaded", async () => {
-      if (!initClient()) return;
+    async function checkSession() {
+      try {
+        const { data } = await supabase.auth.getSession();
+        if (data?.session) {
+          window.location.href = "/dashboard.html";
+        }
+      } catch (err) {
+        console.error("Session check failed:", err);
+      }
+    }
 
-      document.getElementById("signupBtn").addEventListener("click", signUp);
-      document.getElementById("loginBtn").addEventListener("click", signIn);
-
-      await checkExistingSession();
-    });
+    checkSession();
   </script>
 </body>
 </html>
