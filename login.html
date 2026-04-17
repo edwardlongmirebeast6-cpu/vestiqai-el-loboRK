@@ -120,7 +120,9 @@
 
   <script>
     const SUPABASE_URL = "https://kquoernnqusqbviicymg.supabase.co";
-    const SUPABASE_ANON_KEY = "sb_publishable_OaS8RdnSO95xX3XfLFfRGw_WlkonKoF";
+    const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_OaS8RdnSO95xX3XfLFfRGw_WlkonKoF";
+
+    let supabase;
 
     function setStatus(message, success = false) {
       const status = document.getElementById("status");
@@ -128,86 +130,110 @@
       status.className = success ? "status success" : "status";
     }
 
-    async function initAuth() {
+    function initClient() {
       if (!window.supabase || !window.supabase.createClient) {
-        setStatus("Supabase failed to load. Refresh the page and try again.");
+        setStatus("Supabase failed to load. Refresh and try again.");
+        return false;
+      }
+
+      supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+      return true;
+    }
+
+    async function checkExistingSession() {
+      try {
+        const { data, error } = await supabase.auth.getSession();
+        if (error) return;
+        if (data?.session) {
+          window.location.href = "/dashboard.html";
+        }
+      } catch (err) {
+        console.error("Session check failed:", err);
+      }
+    }
+
+    async function signUp() {
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
+
+      if (!email || !password) {
+        setStatus("Please enter your email and password.");
         return;
       }
 
-      const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      if (password.length < 6) {
+        setStatus("Password must be at least 6 characters.");
+        return;
+      }
 
-      const emailInput = document.getElementById("email");
-      const passwordInput = document.getElementById("password");
-      const signupBtn = document.getElementById("signupBtn");
-      const loginBtn = document.getElementById("loginBtn");
+      setStatus("Creating account...");
 
-      signupBtn.addEventListener("click", async () => {
-        const email = emailInput.value.trim();
-        const password = passwordInput.value.trim();
+      try {
+        const { data, error } = await supabase.auth.signUp({
+          email,
+          password
+        });
 
-        if (!email || !password) {
-          setStatus("Please enter your email and password.");
+        if (error) {
+          setStatus(error.message);
           return;
         }
 
-        if (password.length < 6) {
-          setStatus("Password must be at least 6 characters.");
+        if (data?.user && !data.session) {
+          setStatus("Account created. Check your email to confirm your account if email confirmation is enabled.", true);
           return;
         }
 
-        setStatus("Creating account...");
-
-        try {
-          const { data, error } = await supabase.auth.signUp({
-            email,
-            password
-          });
-
-          if (error) {
-            setStatus(error.message);
-            return;
-          }
-
-          if (data && data.user) {
-            setStatus("Account created successfully. You can log in now.", true);
-          } else {
-            setStatus("Account created. Check your email if confirmation is enabled.", true);
-          }
-        } catch (err) {
-          setStatus("Something went wrong creating your account.");
-        }
-      });
-
-      loginBtn.addEventListener("click", async () => {
-        const email = emailInput.value.trim();
-        const password = passwordInput.value.trim();
-
-        if (!email || !password) {
-          setStatus("Please enter your email and password.");
-          return;
-        }
-
-        setStatus("Logging in...");
-
-        try {
-          const { error } = await supabase.auth.signInWithPassword({
-            email,
-            password
-          });
-
-          if (error) {
-            setStatus(error.message);
-            return;
-          }
-
-          window.location.href = "/Dashboard.html";
-        } catch (err) {
-          setStatus("Something went wrong logging in.");
-        }
-      });
+        setStatus("Account created successfully. Redirecting...", true);
+        setTimeout(() => {
+          window.location.href = "/dashboard.html";
+        }, 800);
+      } catch (err) {
+        console.error(err);
+        setStatus("Something went wrong creating your account.");
+      }
     }
 
-    window.addEventListener("DOMContentLoaded", initAuth);
+    async function signIn() {
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
+
+      if (!email || !password) {
+        setStatus("Please enter your email and password.");
+        return;
+      }
+
+      setStatus("Logging in...");
+
+      try {
+        const { error } = await supabase.auth.signInWithPassword({
+          email,
+          password
+        });
+
+        if (error) {
+          setStatus(error.message);
+          return;
+        }
+
+        setStatus("Login successful. Redirecting...", true);
+        setTimeout(() => {
+          window.location.href = "/dashboard.html";
+        }, 500);
+      } catch (err) {
+        console.error(err);
+        setStatus("Something went wrong logging in.");
+      }
+    }
+
+    window.addEventListener("DOMContentLoaded", async () => {
+      if (!initClient()) return;
+
+      document.getElementById("signupBtn").addEventListener("click", signUp);
+      document.getElementById("loginBtn").addEventListener("click", signIn);
+
+      await checkExistingSession();
+    });
   </script>
 </body>
 </html>
