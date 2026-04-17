@@ -12,23 +12,28 @@
       background: #050505;
       color: #f5f5f5;
     }
+
     .container {
       max-width: 1100px;
       margin: 0 auto;
       padding: 30px 20px 60px;
     }
+
     .topbar {
       display: flex;
       justify-content: space-between;
       align-items: center;
       gap: 16px;
       margin-bottom: 24px;
+      flex-wrap: wrap;
     }
+
     .logo {
       max-width: 220px;
       width: 100%;
       border-radius: 16px;
     }
+
     .btn {
       background: #b30d0d;
       color: white;
@@ -40,14 +45,17 @@
       text-decoration: none;
       display: inline-block;
     }
+
     .btn:hover {
       background: #8f0a0a;
     }
+
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
       gap: 18px;
     }
+
     .card {
       background: #111111;
       border: 1px solid #1f1f1f;
@@ -55,24 +63,30 @@
       padding: 22px;
       box-shadow: 0 10px 30px rgba(0,0,0,.35);
     }
+
     h1 {
       margin: 0 0 18px;
     }
+
     h3 {
       margin-top: 0;
     }
+
     p {
       color: #c8c8c8;
       line-height: 1.6;
     }
+
     .status {
       color: #b30d0d;
       font-size: 14px;
       margin-top: 10px;
     }
+
     .planner {
       margin-top: 24px;
     }
+
     input, select {
       width: 100%;
       padding: 14px;
@@ -83,6 +97,7 @@
       box-sizing: border-box;
       margin-bottom: 12px;
     }
+
     .output {
       margin-top: 16px;
       background: #0d0d0d;
@@ -92,6 +107,7 @@
       padding: 18px;
       color: #d7d7d7;
       line-height: 1.7;
+      min-height: 90px;
     }
   </style>
 </head>
@@ -152,93 +168,139 @@
   </div>
 
   <script>
-  const supabaseUrl = "https://kquoernnqusqbviicymg.supabase.co";
-  const supabaseAnonKey = "sb_publishable_OaS8RdnSO95xX3XfLFfRGw_WlkonKoF";
-  const supabase = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
+    const SUPABASE_URL = "https://kquoernnqusqbviicymg.supabase.co";
+    const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_OaS8RdnSO95xX3XfLFfRGw_WlkonKoF";
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
-  async function loadUser() {
-    const { data } = await supabase.auth.getUser();
-    const user = data.user;
+    async function loadUser() {
+      try {
+        const { data, error } = await supabase.auth.getUser();
 
-    if (!user) {
+        if (error || !data?.user) {
+          window.location.href = "/login.html";
+          return null;
+        }
+
+        document.getElementById("userEmail").textContent = data.user.email || "Logged in user";
+        return data.user;
+      } catch (err) {
+        console.error("Load user error:", err);
+        window.location.href = "/login.html";
+        return null;
+      }
+    }
+
+    async function loadSubscription() {
+      const statusEl = document.getElementById("subscriptionStatus");
+      const noteEl = document.getElementById("subscriptionNote");
+
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+
+        if (!session) {
+          statusEl.textContent = "Not logged in";
+          noteEl.textContent = "";
+          return;
+        }
+
+        const res = await fetch("/.netlify/functions/get-session", {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${session.access_token}`
+          }
+        });
+
+        if (!res.ok) {
+          statusEl.textContent = "Unable to load subscription";
+          noteEl.textContent = "Check your Netlify function deployment.";
+          return;
+        }
+
+        const data = await res.json();
+
+        statusEl.textContent = data.subscription_status || "No subscription found";
+        noteEl.textContent =
+          data.subscription_status === "active"
+            ? "Full access enabled."
+            : "Upgrade to unlock paid features.";
+      } catch (err) {
+        console.error("Subscription load error:", err);
+        statusEl.textContent = "Unable to load subscription";
+        noteEl.textContent = "Please try again later.";
+      }
+    }
+
+    async function generatePlan() {
+      const budget = parseFloat(document.getElementById("budget").value);
+      const risk = document.getElementById("risk").value;
+      const goal = document.getElementById("goal").value;
+      const output = document.getElementById("output");
+
+      if (!budget || !risk || !goal) {
+        output.innerHTML = "Please enter your budget, risk level, and goal.";
+        return;
+      }
+
+      output.innerHTML = "Generating your AI plan...";
+
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+
+        if (!session) {
+          output.innerHTML = "Please log in first.";
+          return;
+        }
+
+        const check = await fetch("/.netlify/functions/get-session", {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${session.access_token}`
+          }
+        });
+
+        if (!check.ok) {
+          output.innerHTML = "Unable to verify your subscription right now.";
+          return;
+        }
+
+        const profile = await check.json();
+        const accessMode = profile.subscription_status === "active" ? "paid" : "demo";
+
+        const response = await fetch("/.netlify/functions/generate-plan", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${session.access_token}`
+          },
+          body: JSON.stringify({ budget, risk, goal, accessMode })
+        });
+
+        if (!response.ok) {
+          output.innerHTML = "Unable to generate plan right now. Check your Netlify function.";
+          return;
+        }
+
+        const data = await response.json();
+        output.innerHTML = data.html || "Unable to generate plan.";
+      } catch (err) {
+        console.error("Generate plan error:", err);
+        output.innerHTML = "Something went wrong generating your plan.";
+      }
+    }
+
+    async function logout() {
+      try {
+        await supabase.auth.signOut();
+      } catch (err) {
+        console.error("Logout error:", err);
+      }
       window.location.href = "/login.html";
-      return null;
     }
 
-    document.getElementById("userEmail").textContent = user.email;
-    return user;
-  }
-
-  async function loadSubscription() {
-    const { data: { session } } = await supabase.auth.getSession();
-
-    if (!session) {
-      document.getElementById("subscriptionStatus").textContent = "Not logged in";
-      document.getElementById("subscriptionNote").textContent = "";
-      return;
-    }
-
-    const res = await fetch("/.netlify/functions/get-session", {
-      headers: {
-        Authorization: `Bearer ${session.access_token}`
-      }
+    window.addEventListener("load", async () => {
+      await loadUser();
+      await loadSubscription();
     });
-
-    const data = await res.json();
-
-    document.getElementById("subscriptionStatus").textContent =
-      data.subscription_status || "No subscription found";
-
-    document.getElementById("subscriptionNote").textContent =
-      data.subscription_status === "active"
-        ? "Full access enabled."
-        : "Upgrade to unlock paid features.";
-  }
-
-  async function generatePlan() {
-    const budget = parseFloat(document.getElementById("budget").value);
-    const risk = document.getElementById("risk").value;
-    const goal = document.getElementById("goal").value;
-    const output = document.getElementById("output");
-
-    output.innerHTML = "Generating your AI plan...";
-
-    const { data: { session } } = await supabase.auth.getSession();
-
-    if (!session) {
-      output.innerHTML = "Please log in first.";
-      return;
-    }
-
-    const check = await fetch("/.netlify/functions/get-session", {
-      headers: {
-        Authorization: `Bearer ${session.access_token}`
-      }
-    });
-
-    const profile = await check.json();
-
-    const accessMode = profile.subscription_status === "active" ? "paid" : "demo";
-
-    const response = await fetch("/.netlify/functions/generate-plan", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ budget, risk, goal, accessMode })
-    });
-
-    const data = await response.json();
-    output.innerHTML = data.html || "Unable to generate plan.";
-  }
-
-  async function logout() {
-    await supabase.auth.signOut();
-    window.location.href = "/login.html";
-  }
-
-  window.onload = async function () {
-    await loadUser();
-    await loadSubscription();
-  };
-</script>
+  </script>
 </body>
 </html>
